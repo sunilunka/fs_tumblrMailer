@@ -1,5 +1,6 @@
 var fs = require("fs");
 var ejs = require("ejs");
+var tumblr = require("tumblr.js");
 
 var emailTemplate = fs.readFileSync("./email_template.html", { encoding: "utf8"});
 
