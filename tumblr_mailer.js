@@ -1,4 +1,5 @@
 var fs = require("fs");
+var ejs = require("ejs");
 
 var emailTemplate = fs.readFileSync("./email_template.html", { encoding: "utf8"});
 
@@ -32,14 +33,13 @@ var contactList = csvParse("./friend_list.csv");
 
 contactList.forEach(function(contact){
 
-  var firstName = contact["firstName"];
-  var numMonthsSinceContact = contact["numMonthsSinceContact"];
+  // var firstName = contact["firstName"];
+  // var numMonthsSinceContact = contact["numMonthsSinceContact"];
 
-  var templateCopy = emailTemplate;
+  var customizedTemplate = ejs.render(emailTemplate, { firstName: contact["firstName"], 
+    numMonthsSinceContact: contact["numMonthsSinceContact"] });
 
-  templateCopy = templateCopy.replace(/FIRST_NAME/gi, firstName).replace(/NUM_MONTHS_SINCE_CONTACT/gi, numMonthsSinceContact);
-
-  console.log(templateCopy, contactList);
+  console.log(customizedTemplate);
 
 });
 
