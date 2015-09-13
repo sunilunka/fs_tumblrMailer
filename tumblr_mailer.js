@@ -10,19 +10,14 @@ var client = tumblr.createClient({
   token_secret: 'h2GN6yofCW6skD66sDzRvBXlNzAj3l3parxcjzvKloEyHRAy5w'
 });
 
-var blogInfo = client.posts('sunnybeezy.tumblr.com', function(error, blog){
-  for(var i = 0; i < blog.posts.length; i++){
-    var post = blog.posts[i];
-    console.log(getBlogTimelate(post.date), post.timestamp, post.title, post.short_url);
-  }
-})
-
 function getBlogTimelate(blogTimeString){
-  var blogTime = blogTimeString.replace(/-/g, "/");
-  return blogTime;
+  var blogTime = new Date(blogTimeString.replace(/-/g, "/"));
+  var timeNow = new Date();
+  return Math.round((timeNow - blogTime) / 1000 / 60 / 60 / 24);
 }
 
-var emailTemplate = fs.readFileSync("./email_template.html", { encoding: "utf8"});
+
+var emailTemplate = fs.readFileSync("./email_template.ejs", { encoding: "utf8"});
 
 function csvParse(csvFile){
 
@@ -50,17 +45,36 @@ function csvParse(csvFile){
 
 };
 
-var contactList = csvParse("./friend_list.csv");
 
-contactList.forEach(function(contact){
+var blogInfo = client.posts('sunnybeezy.tumblr.com', function(error, blog){
+  var forTemplate = [];
+  for(var i = 0; i < blog.posts.length; i++){
+    var post = blog.posts[i];
+    if(getBlogTimelate(post.date) <= 70){
+      forTemplate.push({
+        "href" : post.short_url,
+        "title": post.title
+      });
+    };
+    
+  };
+
+  var contactList = csvParse("./friend_list.csv");
+  contactList.forEach(function(contact){
 
   // var firstName = contact["firstName"];
   // var numMonthsSinceContact = contact["numMonthsSinceContact"];
 
   var customizedTemplate = ejs.render(emailTemplate, { firstName: contact["firstName"], 
-    numMonthsSinceContact: contact["numMonthsSinceContact"] });
+    numMonthsSinceContact: contact["numMonthsSinceContact"], latestPosts: forTemplate});
 
-  console.log(customizedTemplate, blogInfo);
+  console.log(customizedTemplate);
+
+  });
+
 
 });
+
+
+
 
