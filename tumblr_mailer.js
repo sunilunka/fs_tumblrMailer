@@ -13,12 +13,13 @@ var client = tumblr.createClient({
 var blogInfo = client.posts('sunnybeezy.tumblr.com', function(error, blog){
   for(var i = 0; i < blog.posts.length; i++){
     var post = blog.posts[i];
-    console.log(post);
+    console.log(getBlogTimelate(post.date), post.timestamp, post.title, post.short_url);
   }
 })
 
-function getLatestBlogs(blogInfo){
-  console.log(blogInfo);
+function getBlogTimelate(blogTimeString){
+  var blogTime = blogTimeString.replace(/-/g, "/");
+  return blogTime;
 }
 
 var emailTemplate = fs.readFileSync("./email_template.html", { encoding: "utf8"});
