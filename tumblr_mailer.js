@@ -1,6 +1,6 @@
-var fs = require('fs');
+var fs = require("fs");
 
-
+var emailTemplate = fs.readFileSync("./email_template.html", { encoding: "utf8"});
 
 function csvParse(csvFile){
 
@@ -15,8 +15,7 @@ function csvParse(csvFile){
 
   function readCSVFile(file){
     var csvFile = fs.readFileSync(file, { encoding: "utf8"});
-    var lines = csvFile.split("\n").slice(1, -1);
-
+    var lines = csvFile.split("\n").slice(1);
     for(var i = 0; i < lines.length; i++){
       var details = lines[i].split(",");
       contacts.push(new ContactPerson(details[0], details[1], details[2], details[3]));
@@ -25,9 +24,22 @@ function csvParse(csvFile){
   }
 
   readCSVFile(csvFile);
-  console.log(contacts);
   return contacts;
 
-}
+};
 
-csvParse('./friend_list.csv');
+var contactList = csvParse("./friend_list.csv");
+
+contactList.forEach(function(contact){
+
+  var firstName = contact["firstName"];
+  var numMonthsSinceContact = contact["numMonthsSinceContact"];
+
+  var templateCopy = emailTemplate;
+
+  templateCopy = templateCopy.replace(/FIRST_NAME/gi, firstName).replace(/NUM_MONTHS_SINCE_CONTACT/gi, numMonthsSinceContact);
+
+  console.log(templateCopy, contactList);
+
+});
+
