@@ -2,6 +2,25 @@ var fs = require("fs");
 var ejs = require("ejs");
 var tumblr = require("tumblr.js");
 
+
+var client = tumblr.createClient({
+  consumer_key: 'lh8lNR7PsBA1oxANy7N0RvRGAlyxTNRB0KQTGTG2NP0MVvs0Qk',
+  consumer_secret: 'L4hnIrVSxww1fAO86A0qgNeLY8w0iYCbQYTreQV15MNkm1TIsD',
+  token: 'IwgvocxLMsN8Thx40Y4BpG5tggQDWyLWnhYEfSRlEooFwJ7cK9',
+  token_secret: 'h2GN6yofCW6skD66sDzRvBXlNzAj3l3parxcjzvKloEyHRAy5w'
+});
+
+var blogInfo = client.posts('sunnybeezy.tumblr.com', function(error, blog){
+  for(var i = 0; i < blog.posts.length; i++){
+    var post = blog.posts[i];
+    console.log(post);
+  }
+})
+
+function getLatestBlogs(blogInfo){
+  console.log(blogInfo);
+}
+
 var emailTemplate = fs.readFileSync("./email_template.html", { encoding: "utf8"});
 
 function csvParse(csvFile){
@@ -40,7 +59,7 @@ contactList.forEach(function(contact){
   var customizedTemplate = ejs.render(emailTemplate, { firstName: contact["firstName"], 
     numMonthsSinceContact: contact["numMonthsSinceContact"] });
 
-  console.log(customizedTemplate);
+  console.log(customizedTemplate, blogInfo);
 
 });
 
