@@ -105,7 +105,7 @@ var blogInfo = client.posts('sunnybeezy.tumblr.com', function(error, blog){
       });
     };
 
-    sendEmail(firstName, contact["emailAddress"], "Sunil", "sunil.unka@gmail.com", "Hi!" + firstName + " it's been awhile!", customizedTemplate);
+    sendEmail(firstName, contact["emailAddress"], "Sunil", "sunil.unka@gmail.com", "Hi! " + firstName + " it's been awhile!", customizedTemplate);
 
   });
   
